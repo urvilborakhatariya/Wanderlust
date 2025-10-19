@@ -1,0 +1,125 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.container{
+    flex: 1;
+}
+
+label {
+  margin-bottom: 0 !important;
+}
+
+body{
+    font-family: "Plus Jakarta Sans", sans-serif !important;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.navbar{
+    height: 5rem;
+    background-color: white;
+}
+
+.fa-compass{
+    color: #fe424d;
+    font-size: 2rem;
+}
+
+.nav-link{
+    color: #222222 !important;
+}
+
+.f-info-links a{
+    text-decoration: none;
+    color: #222222;
+}
+
+.f-info-links a:hover{
+    text-decoration: underline;
+}
+
+.f-info{
+    height: 8rem;
+    background-color: #ebebeb;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: center;
+}
+
+.f-info-links, .f-info-socials, .f-brands{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.f-info-socials{
+    gap: 1.3rem;
+}
+
+.f-info-socials i{
+    font-size: 1.4rem;
+}
+
+/* Cards */
+
+.listing-card{
+    border: none !important;
+    margin-bottom: 1.8rem;
+}
+
+.card-body{
+    padding: 0;
+    margin-top: 1rem;
+}
+
+.card-img-top{
+    border-radius: 0.8rem;
+    width: 100% !important;
+    object-fit: cover !important;
+
+}
+
+.listing-link{
+    text-decoration: none;
+}
+
+
+/* card overlay effect */
+
+.card-img-overlay:hover{
+    opacity: 0.2;
+    background-color: white;
+}
+
+/* New Page */
+
+.color-btn{
+    background-color: #fe424d;
+    border: none;
+}
+
+/* Show Page */
+
+.show-img{
+    height: 35vh;
+}
+
+.btns{
+    display: flex;
+}
+
+/* .btns a:hover{
+    background-color: #fe424d;
+    opacity: 0.8;
+} */
+
+#map{
+    height: 400px;
+    width: 80vw;
+}
