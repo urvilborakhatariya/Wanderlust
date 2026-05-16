@@ -1,0 +1,48 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="row mt-4">
+    <div class="col-8 offset-2">
+        <h3>My Bookings</h3>
+        <hr>
+        <% if(userBookings.length === 0) { %>
+            <p>You have no active bookings.</p>
+        <% } else { %>
+            <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
+                <% for(let booking of userBookings) { %>
+                    <div class="card col listing-card">
+                        <% if(booking.listing) { %>
+                            <img src="<%= booking.listing.image.url %>" class="card-img-top" alt="listing_image" style="height: 15rem;">
+                            <div class="card-body">
+                                <h5 class="card-title"><%= booking.listing.title %></h5>
+                                <div class="booking-dates mb-3 p-3 bg-light rounded border">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="text-muted small"><i class="fa-regular fa-calendar-check text-success me-1"></i> Check-in</span>
+                                        <span class="fw-bold text-dark"><%= booking.startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="text-muted small"><i class="fa-solid fa-person-walking-luggage text-danger me-1"></i> Check-out</span>
+                                        <span class="fw-bold text-dark"><%= booking.endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></span>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between mt-3">
+                                    <a href="/bookings/<%= booking._id %>/edit" class="btn btn-dark btn-sm">Modify</a>
+                                    <form method="POST" action="/bookings/<%= booking._id %>?_method=DELETE" class="m-0">
+                                        <button class="btn btn-danger btn-sm">Cancel</button>
+                                    </form>
+                                </div>
+                            </div>
+                        <% } else { %>
+                            <div class="card-body">
+                                <h5 class="card-title text-muted">Listing Deleted</h5>
+                                <p class="card-text text-muted">The listing for this booking was removed.</p>
+                                <form method="POST" action="/bookings/<%= booking._id %>?_method=DELETE" class="m-0">
+                                    <button class="btn btn-danger btn-sm">Remove</button>
+                                </form>
+                            </div>
+                        <% } %>
+                    </div>
+                <% } %>
+            </div>
+        <% } %>
+    </div>
+</div>

@@ -1,7 +1,8 @@
 const Listing = require("./models/listing");
 const Review = require("./models/review");
+const Booking = require("./models/booking");
 const ExpressError = require("./utils/ExpressError.js");
-const {listingSchema, reviewSchema} = require("./schema.js");
+const {listingSchema, reviewSchema, bookingSchema} = require("./schema.js");
 
 module.exports.isLoggedIn = (req, res, next) => {
     if(!req.isAuthenticated()){
@@ -39,6 +40,16 @@ module.exports.validateListing = (req, res, next) => {
     }
 };
 
+module.exports.validateBooking = (req, res, next) => {
+    let { error } = bookingSchema.validate(req.body);
+    if (error) {
+        let errMsg = error.details.map((el) => el.message).join(",");
+        throw new ExpressError(400, errMsg);
+    } else {
+        next();
+    }
+};
+
 module.exports.validateReview = (req, res, next) => {
     let {error} = reviewSchema.validate(req.body);
     if (error) {
@@ -55,6 +66,16 @@ module.exports.isReviewAuthor = async (req, res, next) => {
     if(!review.author.equals(res.locals.currUser._id)){
         req.flash("error", "You are not the author of this review");
         return res.redirect(`/listings/${id}`);
+    }
+    next();
+};
+
+module.exports.isBookingAuthor = async (req, res, next) => {
+    let { id } = req.params;
+    let booking = await Booking.findById(id);
+    if (!booking.author.equals(res.locals.currUser._id)) {
+        req.flash("error", "You are not the author of this booking");
+        return res.redirect(`/bookings`);
     }
     next();
 };

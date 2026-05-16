@@ -10,6 +10,9 @@
             <div class="navbar-nav">
                 <a class="nav-link" href="/listings">Explore</a>
                 <a class="nav-link" href="/listings/new">Add New Listing</a>
+                <% if(currUser) { %>
+                    <a class="nav-link" href="/bookings">My Bookings</a>
+                <% } %>
             </div>
             <div class="navbar-nav ms-auto">
                 <form class="d-flex" role="search">

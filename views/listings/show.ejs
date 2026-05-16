@@ -1,7 +1,10 @@
 <% layout("/layouts/boilerplate") %>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
     const mapToken = "<%= process.env.MAP_TOKEN %>";
     const listing = <%- JSON.stringify(listing) %>;
+    const bookedDates = <%- JSON.stringify(bookedDates) %>;
 </script>
     <body>
         <div class="row">
@@ -40,6 +43,32 @@
                         </form>
                     </div>
                     <% } %>
+                        <hr>
+                        <div class="mb-3">
+                            <h4>Book this listing</h4>
+                            <% if(currUser) { %>
+                                <form action="/listings/<%= listing._id %>/bookings" method="POST" class="needs-validation" novalidate id="booking-form">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="startDate" class="form-label">Check-in</label>
+                                            <input type="text" class="form-control" id="startDate" name="booking[startDate]" required placeholder="Select date">
+                                            <div class="invalid-feedback">Please select a valid check-in date.</div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="endDate" class="form-label">Check-out</label>
+                                            <input type="text" class="form-control" id="endDate" name="booking[endDate]" required placeholder="Select date">
+                                            <div class="invalid-feedback">Please select a valid check-out date.</div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <h5>Total: &#8377; <span id="totalPrice">0</span></h5>
+                                    </div>
+                                    <button class="btn btn-success">Book Now</button>
+                                </form>
+                            <% } else { %>
+                                <p>Please <a href="/login">login</a> to book this listing.</p>
+                            <% } %>
+                        </div>
                         <hr>
                         <div class="mb-3">
                             <% if(currUser) { %>
@@ -121,3 +150,49 @@
     </body>
 
     <script src="/js/map.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const pricePerNight = listing.price;
+            let checkInDate = null;
+            let checkOutDate = null;
+
+            const updatePrice = () => {
+                if (checkInDate && checkOutDate) {
+                    const diffTime = Math.abs(checkOutDate - checkInDate);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                    if(diffDays > 0) {
+                        document.getElementById('totalPrice').innerText = (diffDays * pricePerNight).toLocaleString("en-IN");
+                    } else {
+                        document.getElementById('totalPrice').innerText = "0";
+                    }
+                } else {
+                    document.getElementById('totalPrice').innerText = "0";
+                }
+            };
+
+            const flatpickrConfig = {
+                minDate: "today",
+                disable: bookedDates,
+                dateFormat: "Y-m-d",
+            };
+
+            const startPicker = flatpickr("#startDate", {
+                ...flatpickrConfig,
+                onChange: function(selectedDates, dateStr, instance) {
+                    checkInDate = selectedDates[0];
+                    if(checkInDate) {
+                        endPicker.set("minDate", new Date(checkInDate.getTime() + 24 * 60 * 60 * 1000));
+                    }
+                    updatePrice();
+                }
+            });
+
+            const endPicker = flatpickr("#endDate", {
+                ...flatpickrConfig,
+                onChange: function(selectedDates, dateStr, instance) {
+                    checkOutDate = selectedDates[0];
+                    updatePrice();
+                }
+            });
+        });
+    </script>

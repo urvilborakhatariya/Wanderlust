@@ -14,12 +14,22 @@ module.exports.renderNewForm = (req, res) => {
 
 module.exports.showListing = async (req, res) => {
     let { id } = req.params;
-    const listing = await Listing.findById(id).populate({ path: "reviews", populate: { path: "author" }, }).populate("owner");
+    const listing = await Listing.findById(id)
+        .populate({ path: "reviews", populate: { path: "author" }, })
+        .populate("owner")
+        .populate("bookings");
     if (!listing) {
         req.flash("error", "Listing You Requested For Does Not Exist");
         res.redirect("/listings");
     } else {
-        res.render("listings/show.ejs", { listing });
+        // Map bookings to an array of disabled date ranges for Flatpickr
+        const bookedDates = listing.bookings.map(booking => {
+            return {
+                from: booking.startDate.toISOString().split('T')[0],
+                to: booking.endDate.toISOString().split('T')[0]
+            };
+        });
+        res.render("listings/show.ejs", { listing, bookedDates });
     }
 };
 
